@@ -111,41 +111,6 @@ notebooks/
 
 ---
 
-## Getting Started
-
-```bash
-git clone https://github.com/<your-username>/TrafficSTLLM.git
-cd TrafficSTLLM
-pip install -r requirements.txt
-```
-
-Requires Python 3.9+, PyTorch 2.x, PyTorch Geometric, HuggingFace Transformers, OSMnx, scikit-learn, pandas, numpy, and matplotlib.
-
-**Collect data:**
-```bash
-export TOMTOM_API_KEY=your_key_here
-python data/collect.py --duration 24h --interval 60s
-```
-
-**Preprocess:**
-```bash
-python data/preprocess.py --input raw/ --output processed/
-```
-
-**Train:**
-```bash
-python train/train.py --model trafficstllm --masking arbitrary
-python train/train.py --model trafficstllm_v2 --masking arbitrary
-```
-
-**Evaluate:**
-```bash
-python eval/evaluate.py --checkpoint checkpoints/best_model.pt --split test
-python eval/stress_test.py --mode randomised --max_masked 16
-```
-
----
-
 ## Incremental Updates
 
 When new traffic data comes in, there's no need to retrain from scratch. The existing checkpoint is loaded, all scaler objects are reused without refitting (to preserve the original normalisation), and the model is fine-tuned for 10 epochs at a learning rate of 1e-5. That's five times lower than the spatial encoder's initial rate and ten times lower than the GPT-2 LoRA rate — conservative enough to adapt to distributional drift in the new data without overwriting what the model learned on the full training set.
